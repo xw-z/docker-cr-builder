@@ -1,4 +1,4 @@
-name: Pull form docker-hub to 3rd
+name: Pull docker-hub to 3rd
 on:
   workflow_dispatch:
     inputs:
@@ -20,8 +20,8 @@ jobs:
 
     - name: Pull Docker Images
       run: |
-          docker pull "${ github.event.inputs.image }"
-          docker tag "${ github.event.inputs.image }" "${{ secrets.DOCKER_REGISTRY }}/${ github.event.inputs.target_image }"
+          docker pull "${{ github.event.inputs.image }}"
+          docker tag "${{ github.event.inputs.image }}" "${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.target_image }}"
 
     - name: Login to Docker Registry
       uses: docker/login-action@v1
@@ -34,4 +34,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: "${{ secrets.DOCKER_REGISTRY }}/${ github.event.inputs.target_image }"
+        tags: "${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.target_image }}"
