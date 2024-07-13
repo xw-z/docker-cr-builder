@@ -1,0 +1,37 @@
+name: Pull form docker-hub to 3rd
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: '请填写docker原镜像名称'
+        required: true
+        default: 'alpine:latest'
+      target_image:
+        description: '请填写docker新镜像名称'
+        required: true
+        default: 'alpine:latest'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Pull Docker Images
+      run: |
+          docker pull "${ github.event.inputs.image }"
+          docker tag "${ github.event.inputs.image }" "${{ secrets.DOCKER_REGISTRY }}/${ github.event.inputs.target_image }"
+
+    - name: Login to Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ secrets.DOCKER_REGISTRY }}
+        username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+ 
+    - name: Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: "${{ secrets.DOCKER_REGISTRY }}/${ github.event.inputs.target_image }"
