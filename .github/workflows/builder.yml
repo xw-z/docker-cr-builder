@@ -12,6 +12,7 @@ on:
         default: 'alpine:latest'
 jobs:
   build:
+    environment: environments
     runs-on: ubuntu-latest
  
     steps:
